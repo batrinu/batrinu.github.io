@@ -41,7 +41,7 @@ $(function() {
 // for banner height js
 var windowWidth = $(window).width();
     var windowHeight =$(window).height();
-    $('.banner').css({'width':windowWidth });
+    $('.banner').css({'width':windowWidth, 'height': '100%' });
 	
 	
 
