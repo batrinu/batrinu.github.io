@@ -10,17 +10,165 @@
     <script src="https://aframe.io/releases/0.9.1/aframe.min.js"></script>
     <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.2/aframe/build/aframe-ar.js"></script>
     <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-gif-component/master/dist/aframe-gif-component.min.js"></script>
     <title>Document</title>
   </head>
   <body style="margin : 0px; overflow: hidden;">
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
-      <a-marker preset="hiro">
-            <a-entity 
-            obj-model=”obj: url('myObj1.obj'); 
-            mtl: url('myObj1.mtl')”>
-        </a-entity>
+    <a-scene
+      embedded=""
+      arjs="trackingMethod: best; sourceType: webcam; detectionMode: mono_and_matrix;"
+      class=""
+      inspector=""
+      keyboard-shortcuts=""
+      screenshot=""
+      vr-mode-ui=""
+    >
+      <a-marker
+        preset="hiro"
+        id="aframe-scene"
+      >
+        <a-image
+          id="test"
+          src="test.jpeg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
       </a-marker>
-      <a-entity camera></a-entity>
+      <a-marker
+        type="pattern"
+        url='pattern-arjs.patt'
+      >
+        <a-image
+          id="test2"
+          src="test2.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+      <a-marker
+        type="pattern"
+        url='pattern-kanji.patt'
+      >
+        <a-image
+          id="test3"
+          src="test3.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+      <a-marker
+        type="pattern"
+        url='pattern-letterA.patt'
+      >
+        <a-image
+          id="test4"
+          src="test4.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+      <a-marker
+        type="pattern"
+        url='pattern-letterB.patt'
+      >
+        <a-image
+          id="test5"
+          src="test5.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+      <a-marker
+        type="pattern"
+        url='pattern-letterC.patt'
+      >
+        <a-image
+          id="test6"
+          src="test6.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+      <a-marker
+        type="pattern"
+        url='pattern-letterD.patt'
+      >
+        <a-image
+          id="test7"
+          src="test7.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+      <a-marker
+        type="pattern"
+        url='pattern-letterF.patt'
+      >
+        <a-image
+          id="test8"
+          src="test8.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+      <a-marker
+        type="pattern"
+        url='pattern-letterG.patt'
+      >
+        <a-image
+          id="test9"
+          src="test9.jpg"
+          position="0 0 -1.5"
+          rotation="-90 0 0"
+          opacity="1"
+          transparent="true"
+          alpha-test="0.2"
+          shader="standard"
+          scale="4 4 4"
+        ></a-image>
+      </a-marker>
+
     </a-scene>
   </body>
 </html>
