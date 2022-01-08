@@ -1,48 +1,27 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Location Based AR.js demo</title>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-    <script>
-        window.onload = () => {
-            var options = {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-            };
-
-            function success(position) {
-                var crd = position.coords;
-                document.querySelector('a-text').setAttribute('gps-entity-place', `latitude: ${position.coords.latitude}; longitude: ${position.coords.longitude};`)
-                console.log('Your current position is:');
-                console.log(`Latitude : ${crd.latitude}`);
-                console.log(`Longitude: ${crd.longitude}`);
-                console.log(`More or less ${crd.accuracy} meters.`);
-            }
-
-            function error(err) {
-                console.warn(`ERROR(${err.code}): ${err.message}`);
-            }
-
-            navigator.geolocation.getCurrentPosition(success, error, options);
-
-            // navigator.geolocation.getCurrentPosition((position) => {
-            //     document.querySelector('a-text').setAttribute('gps-entity-place', `latitude: ${position.coords.latitude}; longitude: ${position.coords.longitude};`)
-            // });
-        }
-    </script>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>GeoAR.js demo</title>
+    <script src='https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js'></script>
+    <script src='https://raw.githubusercontent.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js'></script>
 </head>
 
-<body style="margin: 0; overflow: hidden;">
-    <a-scene vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; debugUIEnabled: true;">
-        <a-text align="center" anchor="center" baseline="center" value="Strada in palma" look-at="[gps-camera]"
-            scale="12 12 12"></a-text>
-        <a-camera gps-camera rotation-reader> </a-camera>
-    </a-scene>
-</body>
+<link rel="stylesheet" href="./location.css">
 
-</html>
+<!-- Dynamically add places from Javascript -->
+<script src="./places.js"></script>
+
+<body style='margin: 0; overflow: hidden;'>
+    <a-scene
+        cursor='rayOrigin: mouse; fuse: true; fuseTimeout: 0;'
+        raycaster="objects: [gps-entity-place];"
+        vr-mode-ui="enabled: false"
+		embedded
+		arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
+
+        <a-camera gps-camera rotation-reader>
+		</a-camera>
+	</a-scene>
+</body>
