@@ -27,7 +27,7 @@
 			min-height: 100%;
 			width: 100vw;
 			height: 100vh;
-			
+
 		}
 	</style>
 </head>
@@ -95,8 +95,11 @@
 
 			scene = new THREE.Scene();
 
-			renderer = new CSS3DRenderer();
+
+			renderer = new CSS3DRenderer({ alpha: true });
 			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.setClearColor( 0x000000, 0 ); // the default
+
 			container.appendChild(renderer.domElement);
 
 			const group = new THREE.Group();
