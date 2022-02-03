@@ -107,10 +107,10 @@
         container.appendChild(cssRenderer.domElement);
 
         const group = new THREE.Group();
-        group.add(new Element("YUetiB0A80U", 0, 0, 240, 0));
-        group.add(new Element("Tz8dZnM6u6U", 240, 0, 0, Math.PI / 2));
-        group.add(new Element("kAnDZKJfeqI", 0, 0, -240, Math.PI));
-        group.add(new Element("jW7b8w7pZD4", -240, 0, 0, -Math.PI / 2));
+        group.add(new Element("YUetiB0A80U", 0, 0, 210, 0));
+        group.add(new Element("Tz8dZnM6u6U", 210, 0, 0, Math.PI / 2));
+        group.add(new Element("kAnDZKJfeqI", 0, 0, -210, Math.PI));
+        group.add(new Element("jW7b8w7pZD4", -210, 0, 0, -Math.PI / 2));
         scene.add(group);
 
         controls = new TrackballControls(camera, cssRenderer.domElement);
@@ -144,7 +144,7 @@
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
+        audio: false,
         video: { facingMode: { exact: "environment" } },
       });
       const videoTracks = stream.getVideoTracks();
