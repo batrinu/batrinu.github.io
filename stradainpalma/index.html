@@ -1,82 +1,83 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <title>AR with Three.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.min.js"></script>
     <style>
-      #marker {
+      #container {
+        width: 100%;
+        height: 100%;
         position: absolute;
-        width: 200px;
-        height: 200px;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+        top: 0;
+        left: 0;
       }
     </style>
   </head>
   <body>
-    <div id="marker"></div>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.119.0/build/three.min.js"></script>
+    <div id="container"></div>
     <script>
-      var scene = new THREE.Scene();
-      var camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-      );
-      var renderer = new THREE.WebGLRenderer({ alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer.domElement);
+      const container = document.getElementById("container");
 
-      var marker = document.getElementById("marker");
-      marker.innerHTML = "<h1>This is a marker!</h1>";
-
-      var sphereGeometry = new THREE.SphereGeometry(0.1, 32, 32);
-      var sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-      var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-      scene.add(sphere);
-
-      // Request access to the device's camera
       navigator.mediaDevices
-        .getUserMedia({
-          video: { facingMode: "environment" },
-          audio: false,
-        })
-        .then(function (stream) {
-          var video = document.createElement("video");
+        .getUserMedia({ video: { facingMode: "environment" } })
+        .then((stream) => {
+          const video = document.createElement("video");
           video.srcObject = stream;
-          video.setAttribute("playsinline", true);
           video.play();
 
-          var videoTexture = new THREE.VideoTexture(video);
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera(
+            75,
+            container.offsetWidth / container.offsetHeight,
+            0.1,
+            1000
+          );
+          const renderer = new THREE.WebGLRenderer();
+          renderer.setSize(container.offsetWidth, container.offsetHeight);
+          container.appendChild(renderer.domElement);
+
+          const videoTexture = new THREE.VideoTexture(video);
           videoTexture.minFilter = THREE.LinearFilter;
           videoTexture.magFilter = THREE.LinearFilter;
-          videoTexture.format = THREE.RGBFormat;
 
-          var videoMaterial = new THREE.MeshBasicMaterial({
-            map: videoTexture,
+          const plane = new THREE.PlaneBufferGeometry(2, 2);
+          const material = new THREE.MeshBasicMaterial({ map: videoTexture });
+          const mesh = new THREE.Mesh(plane, material);
+          scene.add(mesh);
+
+          const sphere = new THREE.SphereBufferGeometry(0.1, 32, 32);
+          const sphereMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
           });
-          var videoGeometry = new THREE.PlaneGeometry(2, 2, 2);
-          var videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
-          videoMesh.material.side = THREE.DoubleSide;
-          scene.add(videoMesh);
+          const sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+          scene.add(sphereMesh);
 
-          // Animate the scene
-          var animate = function () {
+          const marker = document.createElement("div");
+          marker.style.width = "200px";
+          marker.style.height = "200px";
+          marker.style.backgroundColor = "red";
+          marker.style.position = "absolute";
+          marker.style.top = "50%";
+          marker.style.left = "50%";
+          marker.style.transform = "translate(-50%, -50%)";
+          document.body.appendChild(marker);
+
+          const animate = function () {
             requestAnimationFrame(animate);
 
-            videoMesh.rotation.y = video.currentTime * (Math.PI / 180);
-            renderer.render(scene, camera);
+            sphereMesh.position.z = -0.5;
+            mesh.lookAt(camera.position);
 
-            // Set the HTML element's position based on the sphere
             marker.style.left =
-              window.innerWidth / 2 + sphere.position.x * 200 + "px";
+              container.offsetWidth / 2 + sphereMesh.position.x * 200 + "px";
             marker.style.top =
-              window.innerHeight / 2 + sphere.position.y * 200 + "px";
+              container.offsetHeight / 2 + sphereMesh.position.y * 200 + "px";
+
+            renderer.render(scene, camera);
           };
 
           animate();
+        })
+        .catch((error) => {
+          console.error("Unable to access camera: ", error);
         });
     </script>
   </body>
