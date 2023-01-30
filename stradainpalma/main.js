@@ -26,7 +26,7 @@ navigator.geolocation.getCurrentPosition(function(position) {
         scene.add(videoMesh);
       });
   
-    // Embed a Youtube video
+    // Embed a Youtube video as a marker
     var iframe = document.createElement("iframe");
     iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ";
     iframe.frameBorder = "0";
@@ -34,9 +34,9 @@ navigator.geolocation.getCurrentPosition(function(position) {
     iframe.allowFullscreen = true;
     var iframeTexture = new THREE.Texture(iframe);
     var iframeMaterial = new THREE.MeshBasicMaterial({ map: iframeTexture });
-    var iframeGeometry = new THREE.PlaneGeometry(1, 1);
+    var iframeGeometry = new THREE.PlaneGeometry(0.5, 0.5 * window.innerHeight / window.innerWidth);
     var iframeMesh = new THREE.Mesh(iframeGeometry, iframeMaterial);
-    iframeMesh.position.set(0, 0, -1);
+    iframeMesh.position.set(0, 0, 1);
     marker.add(iframeMesh);
   
     // Render the scene
