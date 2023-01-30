@@ -6,9 +6,9 @@ var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById("container").appendChild(renderer.domElement);
 
+var marker = new THREE.Object3D();
 // Use the device's GPS coordinates to place markers
 navigator.geolocation.getCurrentPosition(function(position) {
-  var marker = new THREE.Object3D();
   marker.position.set(position.coords.latitude, position.coords.longitude, 0);
   scene.add(marker);
 });
@@ -25,7 +25,12 @@ videoMesh.position.set(0, 0, -1);
 marker.add(videoMesh);
 
 // Use the device's rear camera as the background
-var constraints = { video: { facingMode: "environment" } };
+var constraints = {
+  video: { facingMode: "environment" },
+  width: { ideal: 4096 },
+  height: { ideal: 2160 }
+};
+
 navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
   var video = document.createElement("video");
   video.srcObject = stream;
