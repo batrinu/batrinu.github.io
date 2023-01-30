@@ -2,74 +2,82 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>AR Example with Three.js and GPS</title>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.117.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tween.js@16.9.0/dist/tween.umd.min.js"></script>
+    <title>AR with Three.js</title>
+    <style>
+      #marker {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
   </head>
   <body>
+    <div id="marker"></div>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.119.0/build/three.min.js"></script>
     <script>
-      // Initialize Three.js scene
-      let scene = new THREE.Scene();
-      let camera = new THREE.PerspectiveCamera(
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         0.1,
         1000
       );
-      camera.position.z = 5;
-      let renderer = new THREE.WebGLRenderer();
+      var renderer = new THREE.WebGLRenderer({ alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      // Create a sphere and add it to the scene
-      let geometry = new THREE.SphereGeometry(0.5, 32, 32);
-      let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-      let sphere = new THREE.Mesh(geometry, material);
+      var marker = document.getElementById("marker");
+      marker.innerHTML = "<h1>This is a marker!</h1>";
+
+      var sphereGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+      var sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
       scene.add(sphere);
 
-      // Get the current position of the device using the Geolocation API
-      navigator.geolocation.getCurrentPosition(function (position) {
-        let lat = position.coords.latitude;
-        let lng = position.coords.longitude;
-        let alt = position.coords.altitude || 0;
+      // Request access to the device's camera
+      navigator.mediaDevices
+        .getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false,
+        })
+        .then(function (stream) {
+          var video = document.createElement("video");
+          video.srcObject = stream;
+          video.setAttribute("playsinline", true);
+          video.play();
 
-        // Convert GPS coordinates to Three.js world coordinates
-        let radius = 6371; // Earth's radius in kilometers
-        let phi = (90 - lat) * (Math.PI / 180);
-        let theta = (360 - lng) * (Math.PI / 180);
-        let x = (radius + alt) * Math.cos(phi) * Math.cos(theta);
-        let y = (radius + alt) * Math.sin(phi);
-        let z = (radius + alt) * Math.cos(phi) * Math.sin(theta);
+          var videoTexture = new THREE.VideoTexture(video);
+          videoTexture.minFilter = THREE.LinearFilter;
+          videoTexture.magFilter = THREE.LinearFilter;
+          videoTexture.format = THREE.RGBFormat;
 
-        sphere.position.set(x, y, z);
-      });
+          var videoMaterial = new THREE.MeshBasicMaterial({
+            map: videoTexture,
+          });
+          var videoGeometry = new THREE.PlaneGeometry(2, 2, 2);
+          var videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
+          videoMesh.material.side = THREE.DoubleSide;
+          scene.add(videoMesh);
 
-      // Create an HTML element to display content for the marker
-      let marker = document.createElement("div");
-      marker.style.width = "200px";
-      marker.style.height = "100px";
-      marker.style.backgroundColor = "white";
-      marker.style.color = "black";
-      marker.innerHTML =
-        "This is an example of HTML content displayed for a GPS marker.";
-      marker.style.position = "absolute";
-      marker.style.top = "50%";
-      marker.style.left = "50%";
-      marker.style.transform = "translate(-50%, -50%)";
-      document.body.appendChild(marker);
+          // Animate the scene
+          var animate = function () {
+            requestAnimationFrame(animate);
 
-      // Set the HTML element's position based on the sphere
-      marker.style.left =
-        window.innerWidth / 2 + sphere.position.x * 200 + "px";
-      marker.style.top =
-        window.innerHeight / 2 + sphere.position.y * 200 + "px";
-      let animate = function () {
-        requestAnimationFrame(animate);
+            videoMesh.rotation.y = video.currentTime * (Math.PI / 180);
+            renderer.render(scene, camera);
 
-        renderer.render(scene, camera);
-      };
+            // Set the HTML element's position based on the sphere
+            marker.style.left =
+              window.innerWidth / 2 + sphere.position.x * 200 + "px";
+            marker.style.top =
+              window.innerHeight / 2 + sphere.position.y * 200 + "px";
+          };
 
-      animate();
+          animate();
+        });
     </script>
   </body>
 </html>
