@@ -20,7 +20,7 @@ navigator.geolocation.getCurrentPosition(function(position) {
         video.play();
         var videoTexture = new THREE.VideoTexture(video);
         var videoMaterial = new THREE.MeshBasicMaterial({ map: videoTexture });
-        var videoGeometry = new THREE.PlaneGeometry(10, 10);
+        var videoGeometry = new THREE.PlaneGeometry(10, 10 * window.innerHeight / window.innerWidth);
         var videoMesh = new THREE.Mesh(videoGeometry, videoMaterial);
         videoMesh.position.z = -5;
         scene.add(videoMesh);
@@ -42,6 +42,7 @@ navigator.geolocation.getCurrentPosition(function(position) {
     // Render the scene
     var render = function() {
       requestAnimationFrame(render);
+      iframeTexture.needsUpdate = true;
       renderer.render(scene, camera);
     };
     render();
