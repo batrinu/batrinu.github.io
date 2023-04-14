@@ -9,40 +9,52 @@
 	<script type='text/javascript' src='./aframe-ar.js'></script>
 	<script>
 		function createEntity(latitude, longitude, color) {
-			const entity = document.createElement("a-entity");
-			entity.setAttribute("material", `color: ${color}`);
-			entity.setAttribute("geometry", "primitive: box");
-			entity.setAttribute("gps-new-entity-place", `latitude: ${latitude}; longitude: ${longitude};`);
-			entity.setAttribute("scale", "10 10 10");
-			document.querySelector("a-scene").appendChild(entity);
+		  const entity = document.createElement("a-entity");
+		  entity.setAttribute("material", `color: ${color}`);
+		  entity.setAttribute("geometry", "primitive: box");
+		  entity.setAttribute("gps-new-entity-place", `latitude: ${latitude}; longitude: ${longitude};`);
+		  entity.setAttribute("scale", "5 5 5");
+		  document.querySelector("a-scene").appendChild(entity);
 		}
-
+	  
 		function createEntities(latitude, longitude) {
-			createEntity(latitude + 0.001, longitude, "red");
-			createEntity(latitude - 0.001, longitude, "yellow");
-			createEntity(latitude, longitude + 0.001, "blue");
-			createEntity(latitude, longitude - 0.001, "green");
+		  createEntity(latitude + 0.001, longitude, "red");
+		  createEntity(latitude - 0.001, longitude, "yellow");
+		  createEntity(latitude, longitude + 0.001, "blue");
+		  createEntity(latitude, longitude - 0.001, "green");
 		}
-
+	  
+		function setLocation(latitude, longitude) {
+		  const gpsCamera = document.querySelector("#gps-camera");
+		  gpsCamera.setAttribute("gps-new-camera", `gpsMinDistance: 5; simulateLatitude: ${latitude}; simulateLongitude: ${longitude};`);
+	  
+		  const coordinatesDiv = document.querySelector("#coordinates");
+		  coordinatesDiv.innerHTML = `Latitude: ${latitude.toFixed(6)}<br>Longitude: ${longitude.toFixed(6)}`;
+		}
+	  
 		function onGeolocationSuccess(position) {
-			const { latitude, longitude } = position.coords;
-			setLocation(latitude, longitude);
-			createEntities(latitude, longitude);
+		  const { latitude, longitude } = position.coords;
+		  setLocation(latitude, longitude);
+		  createEntities(latitude, longitude);
 		}
-
+	  
+		function onGeolocationError(error) {
+		  console.warn("Error obtaining geolocation:", error);
+		}
+	  
 		document.addEventListener("DOMContentLoaded", () => {
-			if ("geolocation" in navigator) {
-				navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError, {
-					enableHighAccuracy: true,
-					timeout: 5000,
-					maximumAge: 0
-				});
-			} else {
-				console.warn("Geolocation is not available on this device");
-			}
+		  if ("geolocation" in navigator) {
+			navigator.geolocation.getCurrentPosition(onGeolocationSuccess, onGeolocationError, {
+			  enableHighAccuracy: true,
+			  timeout: 5000,
+			  maximumAge: 0
+			});
+		  } else {
+			console.warn("Geolocation is not available on this device");
+		  }
 		});
-
-	</script>
+	  </script>
+	  
 
 </head>
 
