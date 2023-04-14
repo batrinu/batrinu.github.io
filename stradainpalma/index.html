@@ -23,24 +23,26 @@
 			createEntity(latitude, longitude + 0.001, "blue");
 			createEntity(latitude, longitude - 0.001, "green");
 		}
-		function createMenu() {
+		function createMenu(latitude, longitude) {
 			const menu = document.createElement("a-entity");
 			menu.setAttribute("id", "menu");
 			menu.setAttribute("class", "screen menu dark");
 			menu.setAttribute("htmlembed", "ppu:256");
-			menu.setAttribute("position", "0 -0.5 -1");
+			menu.setAttribute("gps-new-entity-place", `latitude: ${latitude}; longitude: ${longitude};`);
 			menu.setAttribute("rotation", "0 0 0");
+			menu.setAttribute("scale", "5 5 5");
 			menu.innerHTML = `
-    <h2>Menu</h2>
-    <ul>
-      <li><a href="#" class="button">Home</a></li>
-      <li><a href="#slide2" class="button">CSS</a></li>
-      <li><a href="#slide3" class="button">Interactivity</a></li>
-      <li><a href="#slide4" class="button">Limitations</a></li>
-    </ul>
-  `;
+							<h2>Menu</h2>
+							<ul>
+							<li><a href="#" class="button">Home</a></li>
+							<li><a href="#slide2" class="button">CSS</a></li>
+							<li><a href="#slide3" class="button">Interactivity</a></li>
+							<li><a href="#slide4" class="button">Limitations</a></li>
+							</ul>
+						`;
 			return menu;
 		}
+
 
 
 
@@ -58,7 +60,7 @@
 			const { latitude, longitude } = position.coords;
 			setLocation(latitude, longitude);
 			createEntities(latitude, longitude);
-			const menu = createMenu();
+			const menu = createMenu(latitude, longitude);
 			document.querySelector("#gps-camera").appendChild(menu);
 
 
@@ -91,7 +93,7 @@
 	<a-scene vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: true'
 		renderer='antialias: true; alpha: true'>
 		<a-camera id="gps-camera" gps-new-camera="gpsMinDistance: 1">
-		
+
 		</a-camera>
 		<!-- Entities will be added dynamically here -->
 
