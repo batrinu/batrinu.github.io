@@ -15,7 +15,7 @@
 			entity.setAttribute("material", `shader: html; target: #htmlElement;`);
 			entity.setAttribute("geometry", "primitive: box");
 			entity.setAttribute("gps-new-entity-place", `latitude: ${latitude}; longitude: ${longitude};`);
-			entity.setAttribute("scale", "20 20 20");
+			entity.setAttribute("scale", "30 30 30");
 			document.querySelector("a-scene").appendChild(entity);
 		}
 
@@ -25,25 +25,7 @@
 			createEntity(latitude, longitude + 0.001, "blue");
 			createEntity(latitude, longitude - 0.001, "green");
 		}
-		function createMenu(latitude, longitude) {
-			const menu = document.createElement("a-entity");
-			menu.setAttribute("id", "menu");
-			menu.setAttribute("class", "screen menu dark");
-			menu.setAttribute("htmlembed", "ppu:256");
-			menu.setAttribute("gps-new-entity-place", `latitude: ${latitude}; longitude: ${longitude};`);
-			menu.setAttribute("rotation", "0 0 0");
-			menu.setAttribute("scale", "5 5 5");
-			menu.innerHTML = `
-							<h2>Menu</h2>
-							<ul>
-							<li><a href="#" class="button">Home</a></li>
-							<li><a href="#slide2" class="button">CSS</a></li>
-							<li><a href="#slide3" class="button">Interactivity</a></li>
-							<li><a href="#slide4" class="button">Limitations</a></li>
-							</ul>
-						`;
-			return menu;
-		}
+
 
 
 
@@ -62,8 +44,7 @@
 			const { latitude, longitude } = position.coords;
 			setLocation(latitude, longitude);
 			createEntities(latitude, longitude);
-			const menu = createMenu(latitude, longitude);
-			document.querySelector("#gps-camera").appendChild(menu);
+		
 
 
 		}
