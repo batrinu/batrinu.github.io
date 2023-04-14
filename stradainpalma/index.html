@@ -4,7 +4,7 @@
 <head>
 	<title>AR.js A-Frame</title>
 	<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-	<script src="https://supereggbert.github.io/aframe-htmlembed-component/dist/build.js"></script>
+	<script src=".build.js"></script>
 	<script type='text/javascript' src='./ar-threex-location-only.js'></script>
 	<script type='text/javascript' src='./aframe-ar.js'></script>
 	<script>
@@ -68,6 +68,15 @@
 		<a-entity position="0 1.6 -1" htmlembed>
 			<p>My HTML</p>
 		</a-entity>
+		<a-entity id="menu" class="screen menu dark" htmlembed="ppu:256" position="-2.712 2.5 -4.476" rotation="0 45 0">
+			<h2>Menu</h2>
+			<ul>
+			  <li><a href="#" class="button">Home</a></li>
+			  <li><a href="#slide2" class="button">CSS</a></li>
+			  <li><a href="#slide3" class="button">Interactivity</a></li>
+			  <li><a href="#slide4" class="button">Limitations</a></li>
+			</ul>
+		  </a-entity>
 	</a-scene>
 
 
