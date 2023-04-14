@@ -13,7 +13,7 @@
 		  entity.setAttribute("material", `color: ${color}`);
 		  entity.setAttribute("geometry", "primitive: box");
 		  entity.setAttribute("gps-new-entity-place", `latitude: ${latitude}; longitude: ${longitude};`);
-		  entity.setAttribute("scale", "5 5 5");
+		  entity.setAttribute("scale", "10 10 10");
 		  document.querySelector("a-scene").appendChild(entity);
 		}
 	  
@@ -63,20 +63,22 @@
 
 	<a-scene vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: true'
 		renderer='antialias: true; alpha: true'>
-		<a-camera id="gps-camera" gps-new-camera="gpsMinDistance: 1"></a-camera>
+		<a-camera id="gps-camera" gps-new-camera="gpsMinDistance: 1">
+			<a-entity id="menu" class="screen menu dark" htmlembed="ppu:256" position="0 -0.5 -1" rotation="0 0 0">
+				<h2>Menu</h2>
+				<ul>
+				  <li><a href="#" class="button">Home</a></li>
+				  <li><a href="#slide2" class="button">CSS</a></li>
+				  <li><a href="#slide3" class="button">Interactivity</a></li>
+				  <li><a href="#slide4" class="button">Limitations</a></li>
+				</ul>
+			  </a-entity>
+			  <a-entity position="0 1.6 -1" htmlembed>
+				  <p>My HTML</p>
+			  </a-entity>
+		</a-camera>
 		<!-- Entities will be added dynamically here -->
-		<a-entity position="0 1.6 -1" htmlembed>
-			<p>My HTML</p>
-		</a-entity>
-		<a-entity id="menu" class="screen menu dark" htmlembed="ppu:256" position="-2.712 2.5 -4.476" rotation="0 45 0">
-			<h2>Menu</h2>
-			<ul>
-			  <li><a href="#" class="button">Home</a></li>
-			  <li><a href="#slide2" class="button">CSS</a></li>
-			  <li><a href="#slide3" class="button">Interactivity</a></li>
-			  <li><a href="#slide4" class="button">Limitations</a></li>
-			</ul>
-		  </a-entity>
+		
 	</a-scene>
 
 
