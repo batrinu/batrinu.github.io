@@ -4,7 +4,7 @@
 <head>
 	<title>AR.js A-Frame</title>
 	<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-	<!-- Assumes AR.js build is in the 'AR.js' directory -->
+	<script src="https://supereggbert.github.io/aframe-htmlembed-component/dist/build.js"></script>
 	<script type='text/javascript' src='./ar-threex-location-only.js'></script>
 	<script type='text/javascript' src='./aframe-ar.js'></script>
 	<script>
@@ -65,6 +65,9 @@
 		renderer='antialias: true; alpha: true'>
 		<a-camera id="gps-camera" gps-new-camera="gpsMinDistance: 1"></a-camera>
 		<!-- Entities will be added dynamically here -->
+		<a-entity position="0 1.6 -1" htmlembed>
+			<p>My HTML</p>
+		</a-entity>
 	</a-scene>
 
 
