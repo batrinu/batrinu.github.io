@@ -1,193 +1,86 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="initial-scale=1.0,user-scalable=no,maximum-scale=1,width=device-width">
-	<title>A-Frame HTML Shader - Dynamic</title>
-	<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-	<script src="https://unpkg.com/aframe-html-shader@0.2.0/dist/aframe-html-shader.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="common.css" />
-	<style type="text/css">
-		#target {
-			width: 512px;
-			height: 256px;
-			position: absolute;
-			background: rgba(255, 255, 0, 0.3);
-		}
-
-		/* Hide the HTML using z-index. */
-		/* Can't use display: none because that would hide the HTML in the rendered material. */
-		#htmlTarget.hide {
-			z-index: -1;
-		}
-
-		#target h1 {
-			font-family: Arial;
-			font-size: 110px;
-			margin: 0;
-			vertical-align: top;
-			color: white;
-		}
-
-		#target h1 span {
-			color: tomato;
-		}
-
-		#emoji {
-			position: absolute;
-			font-size: 512px;
-			color: mediumTurquoise;
-			font-style: serif;
-		}
-
-		#pre {
-			font-family: monospace;
-			margin: 0;
-			padding: 0;
-			height: 50px;
-			font-size: 50px;
-			background: royalblue;
-			color: tomato;
-		}
-
-		#htmlTarget {
-			position: absolute;
-			z-index: 1;
-			height: 100%;
-			width: 100%;
-			overflow: hidden;
-			position: fixed;
-			top: 0;
-		}
-
-		#debug {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-		}
-
-		/* Even works with media queries. */
-		@media (max-width: 768px) {
-			#target {
-				width: 256px;
-				height: 126px;
-			}
-
-			#target h1 {
-				font-size: 55px;
-			}
-
-			#pre {
-				height: 50px;
-				font-size: 25px;
-			}
-
-			#emoji {
-				position: absolute;
-				font-size: 256px;
-				color: red;
-			}
-		}
-	</style>
-	<script>
-		// Component to dynamically update the HTML. Iterate over emojis, substring the text.
-		AFRAME.registerComponent('update-html', {
-			init: function () {
-				this.emojis = ['〠', '✪', '♬', '㋵', '㋺', '㋛', '㋗', '㋧'];
-				this.text = 'A-frame is fun!!!';
-
-				this.emojiEntity = document.getElementById('emojiEntity')
-				this.lettersEntity = document.getElementById('lettersEntity')
-
-				this.emojiIndex = 0;
-				this.emojiUpdateDur = 1000 / this.emojiEntity.getAttribute('material').fps;
-				this.emojiTime = 0;
-
-				this.lettersIndex = 0;
-				this.lettersUpdateDur = 1000 / this.lettersEntity.getAttribute('material').fps;
-				this.lettersTime = 0;
-
-				this.emoji = document.getElementById('emoji')
-				this.pre = document.getElementById('pre')
-			},
-
-			tick: function (t, dt) {
-				var text = this.text;
-
-				this.emojiTime += dt;
-				this.lettersTime += dt;
-
-				// Update emoji, optimizing for the shader's refresh FPS.
-				if (this.emojiTime >= this.emojiUpdateDur) {
-					this.emoji.innerHTML = this.emojis[this.emojiIndex++ % this.emojis.length]
-					this.emojiTime = 0;
-				}
-
-				// Update letters, optimizing for the shader's refresh FPS.
-				if (this.lettersTime >= this.lettersUpdateDur) {
-					var indexEnd = ++this.lettersIndex % (text.length + 1)
-					if (text.charAt(indexEnd) === ' ') {
-						indexEnd = ++this.lettersIndex % (text.length + 1)
-					}
-					this.pre.innerHTML = text.substring(0, indexEnd)
-					this.lettersTime = 0;
-				}
-			}
-		});
-	</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location-based AR with three.js and AR.js</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex.js"></script>
 </head>
-
 <body>
-	<a-scene update-html>
-		<!-- Emoji. -->
-		<a-entity id="emojiEntity" geometry="primitive: box; width: 3; height: 3; depth: 3" rotation="30 60 30"
-			position="-2 2.5 -4.5"
-			material="shader: html; target: #emoji; transparent: true; ratio: height; fps: 0.3; side: double"></a-entity>
+  <script>
+    let scene, camera, renderer, arToolkitSource, arToolkitContext;
+    let mesh;
 
-		<!-- Letters. -->
-		<a-entity id="lettersEntity" geometry="primitive: plane; width: 2; height: 2" rotation="-30 -30 0"
-			position="-0.2 1.5 -2.5"
-			material="shader: html; target: #target; transparent: true; ratio: width; fps: 1.5"></a-entity>
+    init();
+    animate();
 
-		<!-- Sky. -->
-		<a-sky color="pink"></a-sky>
-	</a-scene>
+    function init() {
+      scene = new THREE.Scene();
 
-	<!-- HTML to render as a material. -->
-	<div id="htmlTarget" class="hide">
-		<div id="emoji">〠</div>
-		<div id="target">
-			<h1>HELLO<span>★</span></h1>
-			<span id="pre">A</span>
-		</div>
-	</div>
+      camera = new THREE.Camera();
+      scene.add(camera);
 
-	<!-- Debug, showing the HTML as HTML. -->
-	<div class="buttons">
-		<a id="toggleDOM">toggle DOM visibility</a>
-		<a id="toggleDebug">toggle debug mode for letters</a>
-	</div>
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
-	<div class="spacer"></div>
-	<div class="spacer2"></div>
+      arToolkitSource = new THREEx.ArToolkitSource({
+        sourceType: 'webcam'
+      });
 
-	<script>
-		// Set up debug buttons.
-		(function () {
-			var htmlTarget = document.getElementById('htmlTarget')
-			var lettersEntity = document.querySelector('#lettersEntity');
+      arToolkitSource.init(function onReady() {
+        onResize();
+      });
 
-			document.querySelector('#toggleDOM').addEventListener('click', function () {
-				htmlTarget.classList.toggle('hide');
-			});
+      window.addEventListener('resize', onResize);
 
-			document.querySelector('#lettersEntity').addEventListener('click', function () {
-				var material = Object.assign({}, lettersEntity.getAttribute('material'))
-				material.debug = !material.debug ? '#debug' : ''
-				lettersEntity.setAttribute('material', material)
-			});
-		})();
-	</script>
+      arToolkitContext = new THREEx.ArToolkitContext({
+        cameraParametersUrl: 'https://ar-js-org.github.io/AR.js/data/camera_para.dat',
+        detectionMode: 'mono'
+      });
+
+      arToolkitContext.init(function onCompleted() {
+        camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+      });
+
+      let markerControls = new THREEx.ArMarkerControls(arToolkitContext, camera, {
+        type: 'pattern',
+        patternUrl: 'https://ar-js-org.github.io/AR.js/data/data/patt.hiro',
+        changeMatrixMode: 'cameraTransformMatrix'
+      });
+
+      let geometry = new THREE.BoxGeometry(1, 1, 1);
+      let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      mesh = new THREE.Mesh(geometry, material);
+      mesh.position.y = 0.5;
+      scene.add(mesh);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (arToolkitSource.ready) {
+        arToolkitContext.update(arToolkitSource.domElement);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    function onResize() {
+      arToolkitSource.onResize();
+      arToolkitSource.copySizeTo(renderer.domElement);
+      if (arToolkitContext.arController !== null) {
+        arToolkitSource.copySizeTo(arToolkitContext.arController.canvas);
+      }
+    }
+  </script>
 </body>
-
 </html>
