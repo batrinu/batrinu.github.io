@@ -7,6 +7,7 @@
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://raw.githack.com/mayognaise/aframe-html-shader/master/dist/aframe-html-shader.min.js"></script>
     <style>
       #log {
         position: fixed;
@@ -27,15 +28,19 @@
       vr-mode-ui="enabled: false"
       arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: true;"
     >
-      <a-text
-        id="locationText"
-        value="This content will always face you."
+      <a-entity
+        id="htmlContent"
+        geometry="primitive: plane; height: 2; width: 3.56;"
+        material="shader: html; target: #content;"
         look-at="[gps-camera]"
-        scale="120 120 120"
-      ></a-text>
+        scale="20 20 20"
+      ></a-entity>
       <a-camera gps-camera rotation-reader> </a-camera>
     </a-scene>
     <div id="log"></div>
+
+    <div id="content" style="display: none;">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/MSsYlPDmxfE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>    </div>
 
     <script>
       function log(message) {
@@ -43,13 +48,13 @@
         logElement.innerHTML += `${message}<br>`;
       }
 
-      function setLocationText(lat, lon) {
-        const locationText = document.getElementById('locationText');
-        locationText.setAttribute(
+      function setHtmlContentLocation(lat, lon) {
+        const htmlContent = document.getElementById('htmlContent');
+        htmlContent.setAttribute(
           'gps-entity-place',
           `latitude: ${lat}; longitude: ${lon};`
         );
-        log(`A-text location set to latitude: ${lat}, longitude: ${lon}`);
+        log(`HTML content location set to latitude: ${lat}, longitude: ${lon}`);
       }
 
       function getLocation() {
@@ -58,7 +63,7 @@
             (position) => {
               const lat = position.coords.latitude;
               const lon = position.coords.longitude;
-              setLocationText(lat, lon);
+              setHtmlContentLocation(lat, lon);
               log(`Current location: latitude: ${lat}, longitude: ${lon}`);
             },
             (error) => {
